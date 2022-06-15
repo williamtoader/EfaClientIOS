@@ -6,10 +6,7 @@ import PackageDescription
 let package = Package(
     name: "EfaClientIOS",
     platforms: [
-        .macOS(.v10_12),
-        .iOS(.v10),
-        .tvOS(.v10),
-        .watchOS(.v3)
+        .iOS(.v13)
     ],
     products: [
         .library(
@@ -17,9 +14,15 @@ let package = Package(
             targets: ["EfaClientIOS"]
         )
     ],
+    dependencies: [
+        .package(url: "https://github.com/maticzav/swift-graphql", branch: "main")
+    ],
     targets: [
         .target(
             name: "EfaClientIOS",
+            dependencies: [
+                .product(name: "SwiftGraphQL", package: "swift-graphql")
+            ],
             path: "Sources"
         ),
         .testTarget(

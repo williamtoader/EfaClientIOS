@@ -5,46 +5,36 @@
 //  Created by DB EFA Interns Team on Jun 15, 2022.
 //  Copyright © 2022 Deutsche Bank. All rights reserved.
 //
-
 import Foundation
-import UIKit
+import SwiftGraphQL
 
-@IBDesignable
-public class EfaClientIOS: UIView {
-    let name = "EfaClientIOS loaded"
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
+struct User: Identifiable {
+    let id: String
+    let name: String
+    let email: String
+}
+
+public struct EfaClientIOS {
+    public let API_URL = "http://localhost:3000/graphql"
+
+    init() {
+       
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
-    func setup() {
-        backgroundColor = .lightGray
-        self.translatesAutoresizingMaskIntoConstraints = false
+    func runquery(then:@escaping (Result<GraphQLResult<[User], Objects.Query>, HttpError>)->()){
+        let user = Selection.User {
+            User(
+                id: try $0.id(),
+                name: try $0.name(),
+                email: try $0.email()
+            )
+        }
         
-        let image = UIImage(data: whiteKing)
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(imageView)
+        let query = Selection.Query {
+            try $0.allUsers(selection: user.list)
+        }
         
-        self.addConstraint(NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: self, attribute: .width, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: imageView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: imageView, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 0))
-
-        let label = UILabel()
-        label.text = name
-        label.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(label)
-        self.addConstraint(NSLayoutConstraint(item: label, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: label, attribute: .width, relatedBy: .equal, toItem: self, attribute: .width, multiplier: 1, constant: 0))
-
-        self.layoutIfNeeded()
+        send(query, to: "http://localhost:3000/graphql", onComplete: { result in then(result) })
     }
+    
 }

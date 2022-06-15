@@ -1,11 +1,19 @@
 import XCTest
 @testable import EfaClientIOS
+import SwiftGraphQL
 
 final class EfaClientIOSTests: XCTestCase {
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(EfaClientIOS().text, "Hello, World!")
+        var api = EfaClientIOS()
+        api.runquery() {
+        
+            result in do {
+                try print(result.get().data)
+            }
+            catch {
+                print("err")
+            }
+        }
+        print("Hello")
     }
 }
