@@ -17,7 +17,7 @@ public struct User: Identifiable {
 public struct EfaClientIOS {
     public let API_URL = "http://localhost:3000/graphql"
 
-    init() {
+    public init() {
        
     }
     
