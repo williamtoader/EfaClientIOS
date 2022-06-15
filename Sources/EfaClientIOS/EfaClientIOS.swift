@@ -8,10 +8,10 @@
 import Foundation
 import SwiftGraphQL
 
-struct User: Identifiable {
-    let id: String
-    let name: String
-    let email: String
+public struct User: Identifiable {
+    public let id: String
+    public let name: String
+    public let email: String
 }
 
 public struct EfaClientIOS {
@@ -21,7 +21,7 @@ public struct EfaClientIOS {
        
     }
     
-    func runquery(then:@escaping (Result<GraphQLResult<[User], Objects.Query>, HttpError>)->()){
+    public func runquery(then: @escaping ([User])->()){
         let user = Selection.User {
             User(
                 id: try $0.id(),
@@ -34,7 +34,7 @@ public struct EfaClientIOS {
             try $0.allUsers(selection: user.list)
         }
         
-        send(query, to: "http://localhost:3000/graphql", onComplete: { result in then(result) })
+        send(query, to: "http://localhost:3000/graphql", onComplete: { result in do {try then(result.get().data)} catch {then([])} })
     }
     
 }
