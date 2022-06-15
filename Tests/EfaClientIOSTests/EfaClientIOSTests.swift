@@ -4,10 +4,15 @@ import SwiftGraphQL
 
 final class EfaClientIOSTests: XCTestCase {
     func testExample() throws {
-        var api = EfaClientIOS()
+        let expectation = expectation(description: "foobar")
+        let api = EfaClientIOS()
         api.runquery() {
-            result in print(result)
+            result in do{print(result); expectation.fulfill()}
         }
         print("Hello")
+        
+        waitForExpectations(timeout: 10)
+        
+        
     }
 }
